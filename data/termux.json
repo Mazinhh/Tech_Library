@@ -1,0 +1,67 @@
+{
+  "title": "أوامر Termux المتقدمة",
+  "subtitle": "اضغط على أي أمر لنسخه فوراً إلى الحافظة.",
+  "groups": [
+    {
+      "label": "تحديث وتطوير النظام",
+      "cmds": [
+        "pkg update && pkg upgrade",
+        "termux-setup-storage",
+        "pkg search package_name"
+      ]
+    },
+    {
+      "label": "تثبيت اللغات والبرمجيات",
+      "cmds": [
+        "pkg install python",
+        "pkg install git",
+        "pkg install nodejs",
+        "pkg install clang",
+        "pkg install php",
+        "pkg install nano",
+        "pkg install vim",
+        "pkg install openssh"
+      ]
+    },
+    {
+      "label": "إدارة الملفات والصلاحيات",
+      "cmds": [
+        "ls -la",
+        "cd /sdcard",
+        "mkdir my_project",
+        "rm -rf folder_name",
+        "cp file1 file2",
+        "mv file1 folder/",
+        "chmod +x script.sh"
+      ]
+    },
+    {
+      "label": "الضغط وفك الضغط",
+      "cmds": [
+        "pkg install zip unzip tar",
+        "unzip file.zip",
+        "tar -xvf file.tar.gz"
+      ]
+    },
+    {
+      "label": "الشبكة والنظام",
+      "cmds": [
+        "ifconfig",
+        "ping google.com",
+        "pkg install nmap",
+        "nmap 192.168.1.1",
+        "top",
+        "uname -a",
+        "whoami"
+      ]
+    },
+    {
+      "label": "أدوات الويب والسيرفر",
+      "cmds": [
+        "python -m http.server 8080",
+        "curl -O LINK",
+        "wget LINK"
+      ]
+    }
+  ]
+}

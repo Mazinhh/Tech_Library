@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tech Library - الموسوعة التقنية: دليل شامل لأوامر Termux، محرر Nano، وخيارات المطور في أندرويد">
+  <meta name="keywords" content="Termux, Nano, Android, تطوير, أوامر, لينكس">
+  <meta name="author" content="Tech Library">
+  <meta name="theme-color" content="#020617">
+  <meta property="og:title" content="Tech Library | الموسوعة التقنية">
+  <meta property="og:description" content="دليل شامل لأوامر Termux، محرر Nano، وخيارات المطور في أندرويد">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary">
+  <title>Tech Library | الموسوعة التقنية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body>
+
+  <header>Tech Library</header>
+
+  <nav id="navbar" aria-label="التنقل الرئيسي">
+    <button class="nav-btn active-btn" onclick="show(this, 'termux')" aria-current="page">أوامر Termux</button>
+    <button class="nav-btn" onclick="show(this, 'nano')">محرر Nano</button>
+    <button class="nav-btn" onclick="show(this, 'dev')">خيارات المطور</button>
+  </nav>
+
+  <button onclick="scrollToTop()" id="scrollTopBtn" title="العودة للأعلى" aria-label="العودة للأعلى">&uarr;</button>
+
+  <main>
+    <section id="termux" class="active" aria-labelledby="termux-title">
+      <h2 id="termux-title">أوامر Termux المتقدمة</h2>
+      <p class="subtitle" id="termux-subtitle">اضغط على أي أمر لنسخه فوراً إلى الحافظة.</p>
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dot dot-red"></div>
+          <div class="terminal-dot dot-yellow"></div>
+          <div class="terminal-dot dot-green"></div>
+          <div class="terminal-title">termux_commands.sh</div>
+        </div>
+        <div class="terminal-body command-group" id="termux-container"></div>
+      </div>
+    </section>
+
+    <section id="nano" aria-labelledby="nano-title">
+      <h2 id="nano-title">دليل محرر Nano</h2>
+      <p class="nano-desc" id="nano-desc"></p>
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dot dot-red"></div>
+          <div class="terminal-dot dot-yellow"></div>
+          <div class="terminal-dot dot-green"></div>
+          <div class="terminal-title">nano_shortcuts.txt</div>
+        </div>
+        <div class="terminal-body">
+          <pre id="nano-content"></pre>
+        </div>
+      </div>
+    </section>
+
+    <section id="dev" aria-labelledby="dev-title">
+      <h2 id="dev-title">خيارات المطور (Android 14)</h2>
+      <p class="subtitle" id="dev-subtitle">دليل موسوعي مبسط للإعدادات المتقدمة في أنظمة أندرويد.</p>
+      <div class="dev-container" id="dev-container"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>جميع الحقوق محفوظة &copy; 2026 | <span class="highlight">#22ketab</span></p>
+  </footer>
+
+  <script>
+    (function() {
+      var copying = {};
+
+      function onCopyClick(el) {
+        return function() {
+          if (copying[el.dataset.id]) return;
+          var id = Date.now() + Math.random();
+          el.dataset.id = id;
+          copying[id] = true;
+
+          var text = el.innerText;
+          navigator.clipboard.writeText(text).then(function() {
+            el.classList.add('copy-feedback');
+            var orig = el.innerText;
+            el.innerText = 'تم النسخ إلى الحافظة!';
+
+            setTimeout(function() {
+              el.innerText = orig;
+              el.classList.remove('copy-feedback');
+              delete copying[id];
+            }, 1500);
+          }).catch(function() {
+            delete copying[id];
+          });
+        };
+      }
+
+      function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+      }
+
+      function renderTermux(data) {
+        var titleEl = document.getElementById('termux-title');
+        var subEl = document.getElementById('termux-subtitle');
+        var container = document.getElementById('termux-container');
+        if (titleEl) titleEl.textContent = data.title;
+        if (subEl) subEl.textContent = data.subtitle;
+        if (!container) return;
+
+        container.innerHTML = '';
+        data.groups.forEach(function(group) {
+          var label = document.createElement('p');
+          label.className = 'section-label';
+          label.textContent = group.label;
+          container.appendChild(label);
+
+          group.cmds.forEach(function(cmd) {
+            var code = document.createElement('code');
+            code.className = 'termux-cmd';
+            code.tabIndex = 0;
+            code.textContent = cmd;
+            code.addEventListener('click', onCopyClick(code));
+            container.appendChild(code);
+          });
+        });
+      }
+
+      function renderNano(data) {
+        var titleEl = document.getElementById('nano-title');
+        var descEl = document.getElementById('nano-desc');
+        var pre = document.getElementById('nano-content');
+        if (titleEl) titleEl.textContent = data.title;
+        if (descEl) descEl.textContent = data.desc;
+        if (!pre) return;
+
+        var lines = data.content.split('\n');
+        var html = '';
+        lines.forEach(function(line) {
+          var trimmed = line.trim();
+          if (trimmed.charAt(0) === '#') {
+            html += '<span class="terminal-comment">' + escapeHtml(trimmed) + '</span>\n';
+          } else {
+            html += escapeHtml(line) + '\n';
+          }
+        });
+        pre.innerHTML = html;
+      }
+
+      function renderDev(data) {
+        var titleEl = document.getElementById('dev-title');
+        var subEl = document.getElementById('dev-subtitle');
+        var container = document.getElementById('dev-container');
+        if (titleEl) titleEl.textContent = data.title;
+        if (subEl) subEl.textContent = data.subtitle;
+        if (!container) return;
+
+        container.innerHTML = '';
+
+        data.categories.forEach(function(cat, catIndex) {
+          var catTitle = document.createElement('h3');
+          catTitle.className = 'dev-category-title';
+          catTitle.textContent = (catIndex + 1) + '. ' + cat.cat_title;
+          container.appendChild(catTitle);
+
+          cat.cards.forEach(function(card) {
+            var details = document.createElement('details');
+            details.className = 'dev-card';
+
+            var summary = document.createElement('summary');
+            summary.className = 'dev-summary';
+            var badge = document.createElement('span');
+            badge.className = 'safety-badge ' + card.safety;
+            summary.appendChild(badge);
+            summary.appendChild(document.createTextNode(' ' + card.summary));
+            details.appendChild(summary);
+
+            var contentDiv = document.createElement('div');
+            contentDiv.className = 'dev-content';
+
+            var ul = document.createElement('ul');
+
+            var benefitLi = document.createElement('li');
+            benefitLi.innerHTML = '<strong>الفائدة للمستخدم:</strong> ' + escapeHtml(card.benefit);
+            ul.appendChild(benefitLi);
+
+            if (card.effect) {
+              var effectLi = document.createElement('li');
+              effectLi.innerHTML = '<strong>التأثير:</strong> ' + escapeHtml(card.effect);
+              ul.appendChild(effectLi);
+            }
+
+            contentDiv.appendChild(ul);
+            details.appendChild(contentDiv);
+            container.appendChild(details);
+          });
+        });
+
+        var safetyCard = document.createElement('details');
+        safetyCard.className = 'dev-card';
+        safetyCard.open = true;
+
+        var safetySummary = document.createElement('summary');
+        safetySummary.className = 'dev-summary';
+        safetySummary.textContent = 'مستويات الخطورة (تحذير هام)';
+        safetyCard.appendChild(safetySummary);
+
+        var safetyContent = document.createElement('div');
+        safetyContent.className = 'dev-content';
+
+        var safetyUl = document.createElement('ul');
+        safetyUl.className = 'safety-levels';
+
+        var levels = [
+          { text: 'آمن تماماً: خيارات عرض المعلومات (مثل الذاكرة ومعدل التحديث وتقييد الواي فاي).', cls: 'safe' },
+          { text: 'يحتاج حذر (يستهلك بطارية): خيارات الرسوميات المتقدمة (مثل Force 4x MSAA) وإبقاء البيانات نشطة.', cls: 'caution' },
+          { text: 'خطر مرتفع (للمحترفين فقط): فتح Bootloader، تعطيل حماية الرسائل، وتعديل إعدادات المودم.', cls: 'danger' }
+        ];
+
+        levels.forEach(function(level) {
+          var li = document.createElement('li');
+          var span = document.createElement('span');
+          span.className = 'safety-badge ' + level.cls;
+          li.appendChild(span);
+          li.appendChild(document.createTextNode(level.text));
+          safetyUl.appendChild(li);
+        });
+
+        safetyContent.appendChild(safetyUl);
+        safetyCard.appendChild(safetyContent);
+        container.appendChild(safetyCard);
+      }
+
+      async function loadData() {
+        try {
+          var [termuxData, nanoData, devData] = await Promise.all([
+            fetch('data/termux.json').then(function(r) { return r.json(); }),
+            fetch('data/nano.json').then(function(r) { return r.json(); }),
+            fetch('data/dev.json').then(function(r) { return r.json(); })
+          ]);
+          renderTermux(termuxData);
+          renderNano(nanoData);
+          renderDev(devData);
+        } catch (e) {
+          console.error('Tech Library: فشل تحميل البيانات', e);
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', loadData);
+    })();
+
+    function show(btn, id) {
+      document.querySelectorAll('section').forEach(function(s) {
+        s.classList.remove('active');
+      });
+      document.getElementById(id).classList.add('active');
+
+      document.querySelectorAll('.nav-btn').forEach(function(b) {
+        b.classList.remove('active-btn');
+        b.removeAttribute('aria-current');
+      });
+      btn.classList.add('active-btn');
+      btn.setAttribute('aria-current', 'page');
+    }
+
+    var lastScrollY = window.scrollY;
+    var navbar = document.getElementById('navbar');
+    var scrollBtn = document.getElementById('scrollTopBtn');
+
+    window.addEventListener('scroll', function() {
+      if (window.scrollY > lastScrollY && window.scrollY > 100) {
+        navbar.classList.add('nav-hidden');
+      } else {
+        navbar.classList.remove('nav-hidden');
+      }
+      lastScrollY = window.scrollY;
+
+      if (document.body.scrollTop > 300 || document.documentElement.scrollTop > 300) {
+        scrollBtn.style.display = 'block';
+      } else {
+        scrollBtn.style.display = 'none';
+      }
+    }, { passive: true });
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    if (window.netlifyIdentity) {
+      window.netlifyIdentity.on('init', function(user) {
+        if (!user) {
+          window.netlifyIdentity.on('login', function() {
+            document.location.href = '/admin/';
+          });
+        }
+      });
+    }
+  </script>
+
+</body>
+</html>
