@@ -1,6 +1,6 @@
 backend:
   name: github
-  repo: username/repo-name
+  repo: Mazinhh/Tech_Library
   branch: main
 
 media_folder: "images"
