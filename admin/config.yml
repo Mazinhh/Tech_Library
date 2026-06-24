@@ -1,6 +1,6 @@
+
 backend:
-  name: github
-  repo: Mazinhh/Tech_Library
+  name: git-gateway
   branch: main
 
 media_folder: "images"
