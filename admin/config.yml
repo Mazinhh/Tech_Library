@@ -1,4 +1,3 @@
-
 backend:
   name: git-gateway
   branch: main
@@ -24,6 +23,7 @@ collections:
             fields:
               - { label: "اسم المجموعة", name: "label", widget: "string" }
               - { label: "الأوامر", name: "cmds", widget: "list" }
+
       - name: "nano"
         label: "محرر Nano"
         file: "data/nano.json"
@@ -31,22 +31,11 @@ collections:
           - { label: "العنوان", name: "title", widget: "string" }
           - { label: "الوصف", name: "desc", widget: "string" }
           - { label: "المحتوى", name: "content", widget: "markdown" }
+
       - name: "dev"
         label: "خيارات المطور"
         file: "data/dev.json"
         fields:
           - { label: "العنوان", name: "title", widget: "string" }
-          - { label: "العنوان الفرعي", name: "subtitle", widget: "string" }
-          - label: "التصنيفات"
-            name: "categories"
-            widget: "list"
-            fields:
-              - { label: "اسم التصنيف", name: "cat_title", widget: "string" }
-              - label: "البطاقات"
-                name: "cards"
-                widget: "list"
-                fields:
-                  - { label: "العنوان", name: "summary", widget: "string" }
-                  - { label: "الفائدة", name: "benefit", widget: "text" }
-                  - { label: "التأثير", name: "effect", widget: "text", required: false }
-                  - { label: "مستوى الخطورة", name: "safety", widget: "select", options: ["safe", "caution", "danger"] }
+          - { label: "الوصف", name: "desc", widget: "string" }
+          - { label: "المحتوى", name: "content", widget: "markdown" }
